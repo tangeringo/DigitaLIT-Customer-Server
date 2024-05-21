@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
-import { RequestBody } from "../utils/interfaces";
+import { StripeRequestBody } from "../utils/interfaces";
 
 dotenv.config();
 
@@ -11,7 +11,7 @@ const port = process.env.STRIPE_PORT;
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 app.post('/secret', async (req: Request, res: Response) => {
-  const { amount }: RequestBody = req.body;
+  const { amount }: StripeRequestBody = req.body;
 
   try {
     const intent = await stripe.paymentIntents.create({

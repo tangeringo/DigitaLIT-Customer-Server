@@ -24,6 +24,7 @@ dotenv_1.default.config();
 const host = process.env.HOST;
 const port = process.env.PORT;
 const stripePort = process.env.STRIPE_PORT;
+const loginPort = process.env.LOGIN_PORT;
 // Start Micro-Services
 (0, child_process_1.fork)("src/microservices/stripeService.ts");
 // initial welcomming
@@ -35,10 +36,38 @@ app.post("/secret", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     const { amount } = req.body;
     try {
         const response = yield axios_1.default.post(`${host}${stripePort}/secret`, { amount });
-        res.json(response.data);
+        res.status(200).json(response.data);
     }
     catch (error) {
         res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
+// Login Endpoint
+app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, password } = req.body;
+    console.log("email: ", email);
+    console.log("password: ", password);
+    try {
+        //   // const response = await axios.post(`${host}${loginPort}/login`, { email, password });
+        //   // res.json(response.data);
+        res.status(200).json({ tokens: { access: "access23", refresh: "refresh123" } }); // doesn't send anything back
+    }
+    catch (error) {
+        res.status(500).json({ error: `Handling login data failed: ${error}` });
+    }
+}));
+// Login Endpoint
+app.post("/create-account", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name, email, password } = req.body;
+    console.log("name: ", name);
+    console.log("email: ", email);
+    console.log("password: ", password);
+    try {
+        // const response = await axios.post(`${host}${loginPort}/login`, { email, password });
+        // res.json(response.data);
+    }
+    catch (error) {
+        res.status(500).json({ error: `Handling login data failed: ${error}` });
     }
 }));
 app.listen(port, () => {
