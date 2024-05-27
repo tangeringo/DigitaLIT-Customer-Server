@@ -16,9 +16,7 @@ authRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, functi
     console.log("email: ", email);
     console.log("password: ", password);
     try {
-        //   // const response = await axios.post(`${host}${loginPort}/login`, { email, password });
-        //   // res.json(response.data);
-        res.status(200).json({ tokens: { access: "access23", refresh: "refresh123" } }); // doesn't send anything back
+        res.status(200).json({ tokens: { access: "access23", refresh: "refresh123" } });
     }
     catch (error) {
         res.status(500).json({ error: `Handling login data failed: ${error}` });
@@ -30,9 +28,7 @@ authRouter.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, fun
     console.log("email: ", email);
     console.log("password: ", password);
     try {
-        //   // const response = await axios.post(`${host}${loginPort}/login`, { email, password });
-        //   // res.json(response.data);
-        res.status(200).json({ tokens: { access: "access23", refresh: "refresh123" } }); // doesn't send anything back
+        res.status(200).json({ tokens: { access: "access23", refresh: "refresh123" } });
     }
     catch (error) {
         res.status(500).json({ error: `Handling login data failed: ${error}` });

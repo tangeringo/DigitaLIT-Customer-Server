@@ -13,18 +13,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const axios_1 = __importDefault(require("axios"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+const secretKey = process.env.STRIPE_SECRET_KEY;
+const stripe = require('stripe')(secretKey);
 const stripeRouter = (0, express_1.Router)();
-const host = process.env.HOST;
-const stripePort = process.env.STRIPE_PORT;
+if (!secretKey) {
+    throw new Error('Missing secret key');
+}
 stripeRouter.post("/secret", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { amount } = req.body;
     try {
-        const response = yield axios_1.default.post(`${host}${stripePort}/secret`, { amount });
-        res.status(200).json(response.data);
+        const intent = yield stripe.paymentIntents.create({
+            amount: amount,
+            currency: 'usd',
+            automatic_payment_methods: { enabled: true },
+        });
+        res.status(200).json({ client_secret: intent.client_secret });
     }
     catch (error) {
-        res.status(500).json({ error: "Internal Server Error" });
+        res.status(500).json(`Internal Error while generating secret ${error}`);
     }
 }));
 exports.default = stripeRouter;

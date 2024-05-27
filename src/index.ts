@@ -6,7 +6,6 @@ import { fork } from "child_process";
 // routers
 import authRouter from "./routes/auth";
 import stripeRouter from "./routes/stripe";
-import welcomingRouter from "./routes/welcomingRouter";
 
 
 dotenv.config();
@@ -16,13 +15,12 @@ const app: Express = express();
 app.use(express.json());
 app.use(cors());
 
-app.use("/api", welcomingRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/stripe", stripeRouter);
 
 
 // Start Micro-Services
-fork("src/microservices/stripeService.ts");
+// fork("src/microservices/stripeService.ts");
 
 
 app.listen(port, () => {
