@@ -1,12 +1,12 @@
 import { Router, Request, Response } from "express";
 import { StripeRequestBody } from "../utils/interfaces";
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 
 dotenv.config();
-const secretKey = process.env.STRIPE_SECRET_KEY;
-const stripe = require('stripe')(secretKey);
 
 const stripeRouter = Router();
+const secretKey = process.env.STRIPE_SECRET_KEY;
+const stripe = require('stripe')(secretKey);
 
 if (!secretKey) {
   throw new Error('Missing secret key');
@@ -21,10 +21,9 @@ stripeRouter.post("/secret", async (req: Request, res: Response) => {
       currency: 'usd',
       automatic_payment_methods: {enabled: true},
     });
-
     res.status(200).json({ client_secret: intent.client_secret });
   } catch (error) {
-    res.status(500).json(`Internal Error while generating secret ${error}`)
+    res.status(501).json(`Internal error while generating secret`);
   }
 });
 

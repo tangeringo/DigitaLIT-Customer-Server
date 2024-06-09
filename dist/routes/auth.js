@@ -8,15 +8,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const generateFuncs_1 = require("../utils/generateFuncs");
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 const authRouter = (0, express_1.Router)();
 authRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
-    console.log("email: ", email);
-    console.log("password: ", password);
     try {
-        res.status(200).json({ tokens: { access: "access23", refresh: "refresh123" } });
+        // (1) validate the user info
+        // (2) if correct -> generate tokens
+        const tokens = (0, generateFuncs_1.generateTokens)(email); // change for the ID -> from the database afterwards
+        res.status(200).json({ tokens });
     }
     catch (error) {
         res.status(500).json({ error: `Handling login data failed: ${error}` });
@@ -24,11 +31,11 @@ authRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, functi
 }));
 authRouter.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password } = req.body;
-    console.log("name: ", name);
-    console.log("email: ", email);
-    console.log("password: ", password);
     try {
-        res.status(200).json({ tokens: { access: "access23", refresh: "refresh123" } });
+        // (1) create a new user in the DB
+        // (2) generate tokens
+        const tokens = (0, generateFuncs_1.generateTokens)(email); // change for the ID -> from the database afterwards
+        res.status(200).json({ tokens });
     }
     catch (error) {
         res.status(500).json({ error: `Handling login data failed: ${error}` });

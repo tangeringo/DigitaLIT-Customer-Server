@@ -15,8 +15,8 @@ const app: Express = express();
 app.use(express.json());
 app.use(cors());
 
-app.use("/api/auth", authRouter);
-app.use("/api/stripe", stripeRouter);
+app.use("/users/auth", authRouter);
+app.use("/users/stripe", stripeRouter);
 
 
 // Start Micro-Services
@@ -24,8 +24,5 @@ app.use("/api/stripe", stripeRouter);
 
 
 app.listen(port, () => {
-  console.log(`[server]: Server is running at port ${port}`);
+  console.log(`[index server] is running`);
 });
-
-
-// run the server: npm run dev (with nodemon) or npx ts-node src/index.ts (everyFuckingTime)

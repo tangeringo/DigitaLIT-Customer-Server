@@ -9,18 +9,15 @@ const cors_1 = __importDefault(require("cors"));
 // routers
 const auth_1 = __importDefault(require("./routes/auth"));
 const stripe_1 = __importDefault(require("./routes/stripe"));
-const welcomingRouter_1 = __importDefault(require("./routes/welcomingRouter"));
 dotenv_1.default.config();
 const port = process.env.PORT;
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
-app.use("/api", welcomingRouter_1.default); // testing purposes
-app.use("/api/auth", auth_1.default);
-app.use("/api/stripe", stripe_1.default);
+app.use("/users/auth", auth_1.default);
+app.use("/users/stripe", stripe_1.default);
 // Start Micro-Services
 // fork("src/microservices/stripeService.ts");
 app.listen(port, () => {
-    console.log(`[server]: Server is running at port ${port}`);
+    console.log(`[index server] is running`);
 });
-// run the server: npm run dev (with nodemon) or npx ts-node src/index.ts (everyFuckingTime)

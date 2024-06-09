@@ -15,9 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
+const stripeRouter = (0, express_1.Router)();
 const secretKey = process.env.STRIPE_SECRET_KEY;
 const stripe = require('stripe')(secretKey);
-const stripeRouter = (0, express_1.Router)();
 if (!secretKey) {
     throw new Error('Missing secret key');
 }
@@ -32,7 +32,7 @@ stripeRouter.post("/secret", (req, res) => __awaiter(void 0, void 0, void 0, fun
         res.status(200).json({ client_secret: intent.client_secret });
     }
     catch (error) {
-        res.status(500).json(`Internal Error while generating secret ${error}`);
+        res.status(501).json(`Internal error while generating secret`);
     }
 }));
 exports.default = stripeRouter;
