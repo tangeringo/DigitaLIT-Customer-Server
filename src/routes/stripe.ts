@@ -5,12 +5,12 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const stripeRouter = Router();
-const secretKey = process.env.STRIPE_SECRET_KEY;
+const secretKey = process.env.STRIPE_SECRET_KEY ;
 const stripe = require('stripe')(secretKey);
 
-// if (!secretKey) {
-//   throw new Error('Missing secret key');
-// }
+if (!secretKey) {
+  throw new Error('Missing secret key');
+}
 
 stripeRouter.post("/secret", async (req: Request, res: Response) => {
   const { amount }: StripeRequestBody = req.body;

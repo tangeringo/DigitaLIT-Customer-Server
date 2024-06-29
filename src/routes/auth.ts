@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { AuthRequestBody, databaseUser } from "../utils/interfaces";
+import { AuthRequestBody } from "../utils/interfaces";
 import { Request, Response } from "express";
 import { generateTokens } from '../utils/generate.utils';
 import dotenv from 'dotenv';
@@ -8,13 +8,6 @@ import { encrypt, hashText } from "../utils/crypto.utils";
 
 dotenv.config();
 const authRouter = Router();
-
-interface UserData {
-  createdAt: Date;
-  displayName: Buffer;
-  email: Buffer;
-  hash: string
-}
 
 authRouter.post("/login", async(req: Request, res: Response) => {
   const { email, password }: AuthRequestBody = req.body;
@@ -35,11 +28,6 @@ authRouter.post("/register", async(req: Request, res: Response) => {
   const createdAt = new Date();
 
   try {
-    const user = { 
-      createdAt, displayName: name, 
-      email, password 
-    }
-
     const encryptedEmail = encrypt(email);
     const encryptedDisplayName = encrypt(name);
     const hashedPassword = hashText(password);
@@ -47,17 +35,13 @@ authRouter.post("/register", async(req: Request, res: Response) => {
     const sql = 'INSERT INTO auth (createdAt, displayName, email, hash) VALUES (?, ?, ?, ?)';
     const values = [createdAt, encryptedDisplayName, encryptedEmail, hashedPassword];
 
-    // (await db).query(sql, [values], (err: any, data: UserData) => {
-    //   if (err) res.status(400).json(`Error while making a sql query ${err}`);
-    //   return res.json(data);
-    // })
-    
+    db.query(sql, values, (err: any, result: any) => {
+      if (err) return res.status(400).json({ error: 'Failed to register user' });
 
-    console.log('User registered successfully');
-    res.status(200).json({ message: 'User registered successfully' });
-    // (2) generate tokens
-    const tokens = generateTokens(email);  // change for the ID -> from the database afterwards
-    res.status(200).json({ tokens });
+      res.status(200).json({ result });
+      // const tokens = generateTokens(email);  // change for the ID -> from the database afterwards
+      // res.status(200).json({ tokens });
+    });
   } catch (error) {
     res.status(500).json({ error: `Handling register data failed: ${error}`});
   }

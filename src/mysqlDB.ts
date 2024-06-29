@@ -1,16 +1,18 @@
-import mysql, { QueryResult } from 'mysql2/promise';
+import mysql, { Connection, MysqlError } from 'mysql';
 import { databaseUser } from './utils/interfaces';
-import bcrypt from 'bcrypt';
-import { encrypt, hashText } from './utils/crypto.utils';
+// import bcrypt from 'bcrypt';
+// import { encrypt, hashText } from './utils/crypto.utils';
 
-export const db = mysql.createConnection({
-  // host: 'diglit.online',
-  host: '37.46.209.133',
-  user: 'admin@diglit',
-  password: 'EU@nD;EmMgW4"9$fqS9Ij;m!A',
-  database: 'diglit_customers'
-});
+// Create a connection configuration object
+const dbConfig: mysql.ConnectionConfig = {
+// host: 'diglit.online',
+host: 'localhost',
+user: 'admin@diglit',
+password: 'EU@nD;EmMgW4"9$fqS9Ij;m!A',
+database: 'diglit_customers'
+};
 
+// Create a connection variable with explicit type
+const con: Connection = mysql.createConnection(dbConfig);
 
-
-export default db;
+export default con;
