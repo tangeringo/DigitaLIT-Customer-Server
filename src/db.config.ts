@@ -1,13 +1,15 @@
 import mysql from 'mysql2';
-// push the connect information to .env
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const dbConfig: mysql.ConnectionOptions = {
-  host: 'localhost',
-  user: 'admin',
-  password: 'EU@nD;EmMgW4"9$fqS9Ij;m!A',
-  database: 'diglit_customers',
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
   authPlugins: {
-    mysql_clear_password: () => () => Buffer.from('EU@nD;EmMgW4"9$fqS9Ij;m!A')
+    mysql_clear_password: () => () => Buffer.from(process.env.DB_PASSWORD ?? "")
   }
 };
 
