@@ -1,4 +1,5 @@
 import mysql from 'mysql2';
+// push the connect information to .env
 
 const dbConfig: mysql.ConnectionOptions = {
   host: 'localhost',
