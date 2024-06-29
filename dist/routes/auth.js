@@ -15,15 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const generate_utils_1 = require("../utils/generate.utils");
 const dotenv_1 = __importDefault(require("dotenv"));
-const mysqlDB_1 = require("../mysqlDB");
+const crypto_utils_1 = require("../utils/crypto.utils");
 dotenv_1.default.config();
 const authRouter = (0, express_1.Router)();
 authRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
         // (1) validate the user info
-        // const query = 'INSERT INTO mytable (name, value) VALUES (?, ?)';
-        // db.query(query, [name, value], (err, results) => {
         // (2) if correct -> generate tokens
         const tokens = (0, generate_utils_1.generateTokens)(email); // change for the ID -> from the database afterwards
         res.status(200).json({ tokens });
@@ -35,14 +33,22 @@ authRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, functi
 authRouter.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password } = req.body;
     const createdAt = new Date();
-    // CREATE TABLE auth (id INT AUTO_INCREMENT PRIMARY KEY, createdAt DATE, displayName BLOB NOT NULL, email BLOB NOT NULL, UNIQUE KEY unique_email (email(255)), hash CHAR(64) NOT NULL, providerId VARCHAR(10) DEFAULT 'manual'); 
     try {
-        // (1) create a new user in the DB
         const user = {
             createdAt, displayName: name,
             email, password
         };
-        yield (0, mysqlDB_1.insertUser)(user);
+        const encryptedEmail = (0, crypto_utils_1.encrypt)(email);
+        const encryptedDisplayName = (0, crypto_utils_1.encrypt)(name);
+        const hashedPassword = (0, crypto_utils_1.hashText)(password);
+        const sql = 'INSERT INTO auth (createdAt, displayName, email, hash) VALUES (?, ?, ?, ?)';
+        const values = [createdAt, encryptedDisplayName, encryptedEmail, hashedPassword];
+        // (await db).query(sql, [values], (err: any, data: UserData) => {
+        //   if (err) res.status(400).json(`Error while making a sql query ${err}`);
+        //   return res.json(data);
+        // })
+        console.log('User registered successfully');
+        res.status(200).json({ message: 'User registered successfully' });
         // (2) generate tokens
         const tokens = (0, generate_utils_1.generateTokens)(email); // change for the ID -> from the database afterwards
         res.status(200).json({ tokens });

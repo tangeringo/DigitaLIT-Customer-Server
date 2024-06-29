@@ -9,15 +9,26 @@ const cors_1 = __importDefault(require("cors"));
 // routers
 const auth_1 = __importDefault(require("./routes/auth"));
 const stripe_1 = __importDefault(require("./routes/stripe"));
+const welcomingRouter_1 = __importDefault(require("./routes/welcomingRouter"));
 dotenv_1.default.config();
 const port = process.env.PORT;
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
+// HTTPS options (replace with your actual certificate paths)
+// const options = {
+//   key: fs.readFileSync('/etc/letsencrypt/live/diglit.online/privkey.pem'),
+//   cert: fs.readFileSync('/etc/letsencrypt/live/diglit.online/fullchain.pem'),
+// };
+app.use("/users/home/", welcomingRouter_1.default);
 app.use("/users/auth", auth_1.default);
 app.use("/users/stripe", stripe_1.default);
 // Start Micro-Services
 // fork("src/microservices/stripeService.ts");
+// Create HTTPS server
+// https.createServer(options, app).listen(port, () => {
+//   console.log(`HTTPS server running on port ${port}`);
+// });
 app.listen(port, () => {
     console.log(`[index server] is running`);
 });

@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 
 const algorithm = 'aes-256-cbc';
@@ -19,3 +20,9 @@ export function decrypt(encrypted: Buffer): string {
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString();
 }
+
+export async function hashText(password: string): Promise<string> {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    return hashedPassword;
+  }
