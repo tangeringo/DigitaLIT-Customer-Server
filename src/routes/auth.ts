@@ -2,9 +2,10 @@ import { Router } from "express";
 import { AuthRequestBody } from "../utils/interfaces";
 import { Request, Response } from "express";
 import { generateTokens } from '../utils/generate.utils';
-import dotenv from 'dotenv';
-import db from '../mysqlDB';
 import { encrypt, hashText } from "../utils/crypto.utils";
+import dotenv from 'dotenv';
+import pool from '../db.config';
+import mysql from 'mysql2';
 
 dotenv.config();
 const authRouter = Router();
@@ -31,14 +32,14 @@ authRouter.post("/register", async(req: Request, res: Response) => {
     const encryptedEmail = encrypt(email);
     const encryptedDisplayName = encrypt(name);
     const hashedPassword = hashText(password);
-
     const sql = 'INSERT INTO auth (createdAt, displayName, email, hash) VALUES (?, ?, ?, ?)';
     const values = [createdAt, encryptedDisplayName, encryptedEmail, hashedPassword];
 
-    db.query(sql, values, (err: any, result: any) => {
-      if (err) return res.status(400).json({ error: 'Failed to register user' });
+    pool.execute(sql, values, (err: mysql.QueryError | null, result: any) => {
+      if (err) return res.status(400).json({ error: `Failed to register user ${err.message}` });
+      
+      res.status(200).json({ message: `User registered successfully ${result}` });
 
-      res.status(200).json({ result });
       // const tokens = generateTokens(email);  // change for the ID -> from the database afterwards
       // res.status(200).json({ tokens });
     });
