@@ -6,7 +6,7 @@ dotenv.config();
 
 const ALGORITHM = process.env.ALGORITHM as string;
 const KEY = Buffer.from(process.env.KEY as string, "hex");
-const IV = process.env.IV as string;
+const IV = Buffer.from(process.env.IV as string, "hex");
 
 
 export function encrypt(text: string): Buffer {
