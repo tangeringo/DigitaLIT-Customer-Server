@@ -1,22 +1,28 @@
-import bcrypt from 'bcrypt';
 import crypto from 'crypto';
+import dotenv from 'dotenv';
 
-const algorithm = 'aes-256-cbc';
-const key = crypto.randomBytes(32); // Should be stored securely
-const iv = crypto.randomBytes(16);
+
+dotenv.config();
+
+const ALGORITHM = process.env.ALGORITHM as string;
+const KEY = Buffer.from(process.env.KEY as string, "hex");
+const IV = process.env.IV as string;
+
 
 export function encrypt(text: string): Buffer {
-    const cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
-    let encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return Buffer.concat([iv, encrypted]); // Prepend IV for use in decryption
+    const cipher = crypto.createCipheriv(ALGORITHM, KEY, IV);
+    let encrypted = cipher.update(text, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    return Buffer.from(encrypted, 'hex');
 }
 
 export function decrypt(encrypted: Buffer): string {
-    const iv = encrypted.slice(0, 16);
-    const content = encrypted.slice(16);
-    const decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
-    let decrypted = decipher.update(content);
+    const decipher = crypto.createDecipheriv(ALGORITHM, KEY, IV);
+    let decrypted = decipher.update(encrypted);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString();
+    return decrypted.toString('utf8');
+}
+
+export function hashEmail(email: string): string {
+    return crypto.createHash('sha256').update(email).digest('hex');
 }
