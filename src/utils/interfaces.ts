@@ -8,7 +8,7 @@ export interface StripeRequestBody {
 }
 
 export interface AuthRequestBody {
-    name: string;
+    displayName: string;
     email: string;
     password: string
 }

@@ -17,8 +17,8 @@ authRouter.post("/login", async(req: Request, res: Response) => {
   if (!email || !password) return res.status(400).json("Incorrect form submission");
 
   const hashedEmail = hashEmail(email);
-  const sql = 'SELECT id FROM users WHERE emailHash = ?'
-  const values = hashedEmail
+  const sql = 'SELECT id, hashedPassword FROM users WHERE hashedEmail = ?';
+  const values = [hashedEmail];
 
   try {
     pool.execute(sql, values, (err: mysql.QueryError | null, results: any) => {
@@ -44,14 +44,14 @@ authRouter.post("/login", async(req: Request, res: Response) => {
 
 
 authRouter.post("/register", async(req: Request, res: Response) => {
-  const { name, email, password }: AuthRequestBody = req.body;
-  if (!name || !email || !password) return res.status(400).json("Incorrect form submission");
+  const { displayName, email, password }: AuthRequestBody = req.body;
+  if (!displayName || !email || !password) return res.status(400).json("Incorrect form submission");
 
   const createdAt = new Date();
 
   try {
     const encryptedEmail = encrypt(email);
-    const encryptedDisplayName = encrypt(name);
+    const encryptedDisplayName = encrypt(displayName);
     const hashedEmail = hashEmail(email);
     const hashedPassword = await bcrypt.hash(password, 10);  // 10 -> salt
     const sql= 'INSERT INTO users (createdAt, displayName, encryptedEmail, hashedEmail, hashedPassword) VALUES (?, ?, ?, ?, ?)';
@@ -62,7 +62,7 @@ authRouter.post("/register", async(req: Request, res: Response) => {
       const tokens = generateTokens(result.insertedId);
       return res.status(200).json({ tokens });
     });
-    
+
   } catch (error) {
     return res.status(500).json({ error: `Handling register data failed: ${error}`});
   }
