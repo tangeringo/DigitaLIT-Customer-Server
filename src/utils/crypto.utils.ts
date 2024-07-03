@@ -1,13 +1,12 @@
 import crypto from 'crypto';
 import dotenv from 'dotenv';
 
-
 dotenv.config();
 
-const ALGORITHM = process.env.ALGORITHM as string;
-const KEY = Buffer.from(process.env.KEY as string, "hex");
-const IV = Buffer.from(process.env.IV as string, "hex");
 
+const ALGORITHM = process.env.ALGORITHM as string;
+const KEY = Buffer.from(process.env.KEY ?? "" as string, "hex");
+const IV = Buffer.from(process.env.IV ?? "" as string, "hex");
 
 export function encrypt(text: string): Buffer {
     const cipher = crypto.createCipheriv(ALGORITHM, KEY, IV);

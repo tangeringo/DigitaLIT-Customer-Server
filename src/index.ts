@@ -10,6 +10,7 @@ import welcomingRouter from "./routes/welcomingRouter";
 
 
 dotenv.config();
+console.log("Environment Variables (users):", process.env);  // Add this line for debugging
 const port = process.env.PORT;
 
 const app: Express = express();
@@ -25,5 +26,5 @@ app.use("/users/stripe", stripeRouter);
 // fork("src/microservices/stripeService.ts");
 
 app.listen(port, () => {
-  console.log(`[index server] is running`);
+  console.log(`Customers Server is listening on port ${port}`);
 });

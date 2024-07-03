@@ -22,7 +22,7 @@ authRouter.post("/login", async(req: Request, res: Response) => {
 
   try {
     pool.execute(sql, values, (err: mysql.QueryError | null, results: any) => {
-      if (err) return res.status(400).json('Error while logging in');
+      if (err) return res.status(400).json(`Error while logging in`);
         const rows = results as any[];
 
         if (rows.length > 0) {
@@ -36,9 +36,9 @@ authRouter.post("/login", async(req: Request, res: Response) => {
           } else return res.status(400).json('Wrong credentials');
         } else return res.status(400).json('Wrong credentials, can\'t log in.');
     });
-    
+
   } catch (error) {
-    return res.status(500).json({ error: `Handling login data failed: ${error}`});
+    return res.status(500).json({ error: `Handling login data failed`});
   }
 });
 
@@ -64,7 +64,7 @@ authRouter.post("/register", async(req: Request, res: Response) => {
     });
 
   } catch (error) {
-    return res.status(500).json({ error: `Handling register data failed: ${error}`});
+    return res.status(500).json({ error: `Handling register data failed`});
   }
 });
 
