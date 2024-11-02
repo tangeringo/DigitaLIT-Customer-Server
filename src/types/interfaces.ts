@@ -1,9 +1,10 @@
-export interface AuthTokens {
-    access: string;
-    refresh: string;
+export interface AuthCredentials {
+    id?: string | undefined;
+    accessToken: string;
+    refreshToken: string;
 }
 
-export interface StripeRequestBody {
+export type StripeRequestBody = AuthCredentials & {
     amount: number
 }
 

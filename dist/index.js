@@ -8,19 +8,20 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
 // import { fork } from "child_process";
 // routers
-const auth_1 = __importDefault(require("./routes/auth"));
-const stripe_1 = __importDefault(require("./routes/stripe"));
-const welcomingRouter_1 = __importDefault(require("./routes/welcomingRouter"));
+const auth_route_1 = __importDefault(require("./routes/auth.route"));
+const stripe_route_1 = __importDefault(require("./routes/stripe.route"));
+const welcome_route_1 = __importDefault(require("./routes/welcome.route"));
 dotenv_1.default.config();
+// console.log("Environment Variables (users):", process.env);  // Add this line for debugging
 const port = process.env.PORT;
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
-app.use("/users/home/", welcomingRouter_1.default);
-app.use("/users/auth", auth_1.default);
-app.use("/users/stripe", stripe_1.default);
+app.use("/customer/home", welcome_route_1.default);
+app.use("/customer/auth", auth_route_1.default);
+app.use("/customer/stripe", stripe_route_1.default);
 // Start Micro-Services
 // fork("src/microservices/stripeService.ts");
 app.listen(port, () => {
-    console.log(`[index server] is running`);
+    console.log(`Customers Server is listening on port ${port}`);
 });

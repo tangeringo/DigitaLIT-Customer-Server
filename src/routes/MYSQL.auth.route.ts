@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { AuthRequestBody } from "../utils/interfaces";
+import { AuthRequestBody } from "../types/interfaces";
 import { Request, Response } from "express";
 import { generateTokens } from '../utils/generate.utils';
 import { encrypt, hashEmail } from "../utils/crypto.utils";
 import dotenv from 'dotenv';
-import pool from '../db.config';
+import pool from '../mysel.db.config';
 import mysql from 'mysql2';
 import bcrypt from 'bcrypt';
 
@@ -67,6 +67,9 @@ authRouter.post("/register", async(req: Request, res: Response) => {
     return res.status(500).json({ error: `Handling register data failed`});
   }
 });
+
+// validate-access-token
+// generate-new-access-token
 
 
 export default authRouter;
