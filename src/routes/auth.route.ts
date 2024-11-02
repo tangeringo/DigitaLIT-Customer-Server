@@ -1,11 +1,16 @@
 import { Router } from "express";
-import { AuthRequestBody } from "../types/interfaces";
+import { AuthRequestBody, ResetPasswordRequestBody } from "../types/interfaces";
 import { Request, Response } from "express";
 import { generateTokens } from '../utils/generate.utils';
 import { encrypt, hashEmail } from "../utils/crypto.utils";
 import pool from "../postgresql.db.config";
 import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+import { validateAuthCredentials, validTokenId } from "../utils/validate.utils";
 
+
+dotenv.config();
+const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET as string;
 
 const authRouter = Router();
 authRouter.post("/login", async (req: Request, res: Response) => {
@@ -34,7 +39,7 @@ authRouter.post("/login", async (req: Request, res: Response) => {
     }
 });
   
-authRouter.post('/register', async (req: Request, res: Response) => {
+authRouter.post("/register", async (req: Request, res: Response) => {
     const { displayName, email, password }: AuthRequestBody = req.body;
     if (!displayName || !email || !password)
         return res.status(400).json("Incorrect form submission");
@@ -61,6 +66,25 @@ authRouter.post('/register', async (req: Request, res: Response) => {
     
         return res.status(200).json({ tokens });
     } catch (error) { return res.status(500).json({ error: 'Handling register data failed' }); }
+});
+
+authRouter.put("/reset-password", async (req: Request, res: Response) => {
+    const { accessToken, refreshToken, newPassword }: ResetPasswordRequestBody = req.body;
+    if (!accessToken || !refreshToken) return res.status(400).json("Missing access token or refresh token");
+    if (!newPassword) return res.status(400).json("No newPassword provided");
+
+    try {
+        const tokenId = validTokenId(accessToken, JWT_ACCESS_SECRET);
+        const newAccessToken = validateAuthCredentials(accessToken, refreshToken) as string;
+        const hashedPassword = await bcrypt.hash(newPassword, 10); // 10 -> salt
+        const result = await pool('auth')
+        .where({ id: tokenId })
+        .update({ hashedPassword });
+        if (result)
+            return res.status(200).json({ accessToken: newAccessToken, message: "password has been changed" });
+        else 
+            return res.status(404).json({ accessToken: undefined, message: "User not found" });
+    } catch (error) { return res.status(501).json(`Runtime error: ${error}`) }
 });
 
 export default authRouter;

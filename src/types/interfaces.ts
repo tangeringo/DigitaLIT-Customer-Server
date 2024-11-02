@@ -4,9 +4,9 @@ export interface AuthCredentials {
     refreshToken: string;
 }
 
-export type StripeRequestBody = AuthCredentials & {
-    amount: number
-}
+export type StripeRequestBody = AuthCredentials & { amount: number }
+
+export type ResetPasswordRequestBody = AuthCredentials & { newPassword: string }
 
 export interface AuthRequestBody {
     displayName: string;

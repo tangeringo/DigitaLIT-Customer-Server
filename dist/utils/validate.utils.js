@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateAuthCredentials = exports.getNewAccessToken = exports.isAccessTokenValid = exports.validateTokenId = void 0;
+exports.validateAuthCredentials = exports.getNewAccessToken = exports.isAccessTokenValid = exports.validTokenId = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const generate_utils_1 = require("./generate.utils");
@@ -11,7 +11,7 @@ dotenv_1.default.config();
 const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY;
 const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
-function validateTokenId(token, secret_key) {
+function validTokenId(token, secret_key) {
     try {
         const decoded = jsonwebtoken_1.default.verify(token, secret_key);
         return decoded.userId;
@@ -20,18 +20,18 @@ function validateTokenId(token, secret_key) {
         return null;
     }
 }
-exports.validateTokenId = validateTokenId;
+exports.validTokenId = validTokenId;
 const isAccessTokenValid = (accessToken) => {
     if (!accessToken)
         throw new Error("Access token not provided");
-    const tokenId = validateTokenId(accessToken, JWT_ACCESS_SECRET);
+    const tokenId = validTokenId(accessToken, JWT_ACCESS_SECRET);
     return !!tokenId; // true if string, false if null
 };
 exports.isAccessTokenValid = isAccessTokenValid;
 const getNewAccessToken = (refreshToken) => {
     if (!refreshToken)
         throw new Error("Refresh token not provided");
-    const tokenId = validateTokenId(refreshToken, JWT_REFRESH_SECRET);
+    const tokenId = validTokenId(refreshToken, JWT_REFRESH_SECRET);
     if (!tokenId)
         throw new Error("Refresh token expired");
     try {

@@ -25,9 +25,8 @@ stripeRouter.post("/secret", async (req: Request, res: Response) => {
       if (!id) {
         const newAccessToken = validateAuthCredentials(accessToken, refreshToken) as string;
         res.status(200).json({ accessToken: newAccessToken, clientSecret: intent.client_secret });
-      } else { 
-        res.status(200).json({ accessToken: undefined, clientSecret: intent.client_secret }); 
-      }
+      } else 
+        res.status(200).json({ accessToken: undefined, clientSecret: intent.client_secret });
     } catch (error) {
       res.status(501).json(`Internal error while generating secret ${error}`);
     }

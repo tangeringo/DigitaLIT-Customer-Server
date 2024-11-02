@@ -7,7 +7,7 @@ const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY as string;
 const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET as string;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET as string;
 
-export function validateTokenId(token: string, secret_key: string): string | null {
+export function validTokenId(token: string, secret_key: string): string | null {
     try {
         const decoded = jwt.verify(token, secret_key) as JwtPayload;
         return decoded.userId;
@@ -16,14 +16,14 @@ export function validateTokenId(token: string, secret_key: string): string | nul
 
 export const isAccessTokenValid = (accessToken: string): boolean => {
     if (!accessToken) throw new Error("Access token not provided");
-    const tokenId = validateTokenId(accessToken, JWT_ACCESS_SECRET);
+    const tokenId = validTokenId(accessToken, JWT_ACCESS_SECRET);
     return !!tokenId;  // true if string, false if null
 };
 
 export const getNewAccessToken = (refreshToken: string): string | undefined => {
     if (!refreshToken) throw new Error("Refresh token not provided");
 
-    const tokenId = validateTokenId(refreshToken, JWT_REFRESH_SECRET);
+    const tokenId = validTokenId(refreshToken, JWT_REFRESH_SECRET);
     if (!tokenId) throw new Error("Refresh token expired");
     try { 
         return generateToken(tokenId, JWT_ACCESS_SECRET, ACCESS_TOKEN_EXPIRY);
